@@ -28,7 +28,7 @@ class TestAuthorizationEndpoints(BaseTestConfig):
         db.session.remove()
         db.drop_all()
 
-    def test_post_user_registration(self):
+    def test_user_registration(self):
         self.assertEqual(
             201,
             self.user_creation_response.status_code,
@@ -38,6 +38,22 @@ class TestAuthorizationEndpoints(BaseTestConfig):
             self.user_details['email'],
             User.query.one().email,
             msg="User not added to database")
+
+    def test_user_login(self):
+        user_login_details = {
+            'username': self.user_details['email'],
+            'password': self.user_details['password']
+        }
+        user_login_response = self.client.post(
+            '/auth/login',
+            data=json.dumps(dict(user_login_details)),
+            content_type='application/json')
+        self.assertEqual(
+            user_login_response.status_code, 200,
+            msg="Login endpoint not working")
+        self.assertTrue(
+            user_login_response.json['access_token'],
+            msg="Access token not returned")
 
 
 if __name__ == "__main__":

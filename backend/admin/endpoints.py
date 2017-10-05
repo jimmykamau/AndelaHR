@@ -1,8 +1,6 @@
 from flask import request
 from flask_restful import Resource, abort
-from werkzeug.security import (
-    generate_password_hash, check_password_hash)
-
+from werkzeug.security import generate_password_hash
 
 from app import db
 from backend.admin.models import User

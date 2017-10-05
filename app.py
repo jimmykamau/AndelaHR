@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_jwt import JWT
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,7 +14,10 @@ db = SQLAlchemy(app)
 
 
 from backend.admin.endpoints import UserRegistration
+from backend.utils import authenticate, identity
 
+
+jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegistration, '/auth/register/')
 
