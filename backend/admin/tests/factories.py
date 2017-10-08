@@ -9,5 +9,5 @@ class AdminFactory(factory.Factory):
     class Meta:
         model = Admin
 
-    password = factory.LazyAttribute(lambda a: '{0}'.format("password"))
+    password = '{0}'.format("password")
     user_id = factory.SubFactory(UserFactory)

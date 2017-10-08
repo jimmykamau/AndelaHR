@@ -1,9 +1,9 @@
 import unittest
 
 from app import db
+from backend.test_config import BaseTestConfig
 from backend.user.models import User
 from backend.user.tests.factories import UserFactory
-from backend.test_config import BaseTestConfig
 
 
 class TestUserModels(BaseTestConfig):
