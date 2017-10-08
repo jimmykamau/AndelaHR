@@ -1,17 +1,13 @@
 import factory
 
-from backend.admin.models import User
+from backend.admin.models import Admin
+from backend.user.tests.factories import UserFactory
 
 
-class UserFactory(factory.Factory):
-    """Factory for creating dummy users"""
+class AdminFactory(factory.Factory):
+    """Factory for creating dummy users with Admin rights"""
     class Meta:
-        model = User
+        model = Admin
 
-    email = factory.LazyAttribute(
-        lambda a: '{0}@domain.com'.format(
-            a.full_name.replace(' ', '')).lower())
-    password = factory.LazyAttribute(
-        lambda a: '{0}'.format(
-            a.full_name.replace(' ', '')).lower())
-    full_name = factory.Faker('name')
+    password = factory.LazyAttribute(lambda a: '{0}'.format("password"))
+    user_id = factory.SubFactory(UserFactory)

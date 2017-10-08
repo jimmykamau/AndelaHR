@@ -2,8 +2,9 @@ import json
 import unittest
 
 from app import db
-from backend.admin.tests.factories import UserFactory
-from backend.admin.models import User
+from backend.admin.models import Admin
+from backend.admin.tests.factories import AdminFactory
+from backend.user.models import User
 from backend.test_config import BaseTestConfig
 
 
@@ -12,37 +13,31 @@ class TestAuthorizationEndpoints(BaseTestConfig):
     def setUp(self):
         db.create_all()
         db.session.expire_on_commit = False
-        self.user_factory = UserFactory()
-        self.user_details = {
-            'full_name': self.user_factory.full_name,
-            'email': self.user_factory.email,
-            'password': self.user_factory.password
+
+        self.admin_factory = AdminFactory()
+        self.admin_details = {
+            'full_name': self.admin_factory.user_id.full_name,
+            'email': self.admin_factory.user_id.email,
+            'password': self.admin_factory.password
         }
 
-        self.user_creation_response = self.client.post(
+        self.client.post(
             '/auth/register/',
-            data=json.dumps(dict(self.user_details)),
+            data=json.dumps(dict(self.admin_details)),
             content_type='application/json')
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+    def test_admin_creation(self):
+        self.assertGreater(
+            len(User.query.all()), 0,
+            msg="Cannot create admin user via endpoint")
+        self.assertGreater(
+            len(Admin.query.all()), 0,
+            msg="Cannot create admin via endpoint")
 
-    def test_user_registration(self):
-        self.assertEqual(
-            201,
-            self.user_creation_response.status_code,
-            msg="Cannot create user via endpoint")
-
-        self.assertEqual(
-            self.user_details['email'],
-            User.query.one().email,
-            msg="User not added to database")
-
-    def test_user_login(self):
+    def test_admin_login(self):
         user_login_details = {
-            'username': self.user_details['email'],
-            'password': self.user_details['password']
+            'username': self.admin_details['email'],
+            'password': self.admin_details['password']
         }
         user_login_response = self.client.post(
             '/auth/login',

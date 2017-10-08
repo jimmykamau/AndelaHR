@@ -13,13 +13,15 @@ api = Api(app)
 db = SQLAlchemy(app)
 
 
-from backend.admin.endpoints import UserRegistration
+from backend.admin.endpoints import AdminRegistration
+from backend.user.endpoints import UserCreation
 from backend.utils import authenticate, identity
 
 
 jwt = JWT(app, authenticate, identity)
 
-api.add_resource(UserRegistration, '/auth/register/')
+api.add_resource(UserCreation, '/user/')
+api.add_resource(AdminRegistration, '/auth/register/')
 
 
 if __name__ == '__main__':

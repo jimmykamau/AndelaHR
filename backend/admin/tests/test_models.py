@@ -1,9 +1,8 @@
 import unittest
 
-
 from app import db
-from backend.admin.models import User
-from backend.admin.tests.factories import UserFactory
+from backend.admin.models import User, Admin
+from backend.admin.tests.factories import AdminFactory
 from backend.test_config import BaseTestConfig
 
 
@@ -13,23 +12,26 @@ class TestAuthorizationModels(BaseTestConfig):
     def setUp(self):
         db.create_all()
         db.session.expire_on_commit = False
-        self.user_factory = UserFactory()
-        self.user = User(
-            full_name=self.user_factory.full_name,
-            email=self.user_factory.email,
-            password=self.user_factory.password)
-        db.session.add(self.user)
+
+        self.admin_factory = AdminFactory()
+
+        self.admin_user = User(
+            full_name=self.admin_factory.user_id.full_name,
+            email=self.admin_factory.user_id.email)
+        db.session.add(self.admin_user)
         db.session.commit()
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        self.admin_details = Admin(
+            user_id=self.admin_user.id,
+            password=self.admin_factory.password)
+        db.session.add(self.admin_details)
+        db.session.commit()
 
-    def test_adding_user(self):
+    def test_creating_admin(self):
         self.assertEqual(
-            self.user.email,
-            User.query.one().email,
-            msg="Cannot create user"
+            self.admin_factory.user_id.email,
+            User.query.filter_by(id=Admin.query.one().user_id).one().email,
+            msg="Cannot create admin user"
         )
 
 
