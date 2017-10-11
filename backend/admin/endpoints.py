@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt import jwt_required
 from flask_restful import Resource, abort
 from werkzeug.security import generate_password_hash
 
@@ -12,6 +13,8 @@ admin_schema = AdminSchema()
 
 class AdminRegistration(Resource):
     """Handle admin registration endpoints"""
+
+    @jwt_required
     def post(self):
         json_data = request.get_json()
         if not json_data:

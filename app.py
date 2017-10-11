@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 
 
 from backend.admin.endpoints import AdminRegistration
+from backend.task.endpoints import TaskCategory
 from backend.user.endpoints import UserCreation
 from backend.utils import authenticate, identity
 
@@ -22,6 +23,7 @@ jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserCreation, '/user/')
 api.add_resource(AdminRegistration, '/auth/register/')
+api.add_resource(TaskCategory, '/task/')
 
 
 if __name__ == '__main__':
